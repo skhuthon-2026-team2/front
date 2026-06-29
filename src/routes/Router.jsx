@@ -1,7 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import ClubLayout from "../components/layout/ClubLayout";
+import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../features/auth/LoginPage";
+import MainPage from "../features/main/MainPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -17,6 +19,9 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route element={<MainLayout />}>
+        <Route path="/main" element={<MainPage />} />
+      </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/club/:clubId" element={<ClubLayout />}>
           <Route
