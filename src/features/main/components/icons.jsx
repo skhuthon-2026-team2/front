@@ -33,3 +33,11 @@ export function UsersIcon() {
     </svg>
   );
 }
+
+export function CrownIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5">
+      <path d="M5 16h14l1-9-4.5 3L12 5 8.5 10 4 7l1 9zm0 2v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1H5z" />
+    </svg>
+  );
+}

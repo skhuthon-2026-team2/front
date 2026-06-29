@@ -1,4 +1,8 @@
+import { CrownIcon } from "./icons";
+
 export default function ClubCard({ club }) {
+  const isOwner = club.role === "회장"; //추후 백엔드 값으로 바꿀 예정. 회장 아닙니다
+
   return (
     <button
       type="button"
@@ -11,7 +15,8 @@ export default function ClubCard({ club }) {
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {club.role && (
-          <span className="absolute right-2 top-2 rounded-full bg-modam-coral px-2.5 py-1 text-xs font-medium text-white">
+          <span className="absolute right-2 top-2 flex items-center gap-1 rounded-full bg-modam-coral px-2.5 py-1 text-xs font-medium text-white">
+            {isOwner && <CrownIcon />}
             {club.role}
           </span>
         )}
