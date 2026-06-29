@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import ClubLayout from "../components/layout/ClubLayout";
+import LoginPage from "../features/auth/LoginPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -15,15 +16,7 @@ export default function Router() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
-      <Route
-        path="/login"
-        element={
-          <PlaceholderPage
-            title="Login"
-            description="로그인 화면을 여기에 연결하세요."
-          />
-        }
-      />
+      <Route path="/login" element={<LoginPage />} />
       <Route element={<ProtectedRoute />}>
         <Route path="/club/:clubId" element={<ClubLayout />}>
           <Route
