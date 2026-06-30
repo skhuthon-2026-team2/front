@@ -9,6 +9,8 @@ import NicknamePage from "../features/club/NicknamePage";
 import CreateClubPage from "../features/club/CreateClubPage";
 import FeedPage from "../features/feed/FeedPage";
 import WriteFeedPage from "../features/feed/WriteFeedPage";
+import FeedManagePage from "../features/member/FeedManagePage";
+import MemberManagePage from "../features/member/MemberManagePage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -53,6 +55,8 @@ export default function Router() {
             />
           }
         />
+        <Route path="members" element={<MemberManagePage />} />
+        <Route path="members/feed" element={<FeedManagePage />} />
         <Route index element={<Navigate to="feed" replace />} />
       </Route>
 
