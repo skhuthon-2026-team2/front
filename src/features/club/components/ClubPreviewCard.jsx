@@ -5,11 +5,6 @@ export default function ClubPreviewCard({ club, onSelect }) {
         <img src={club.image} alt={club.name} className="h-full w-full object-cover" />
         {/* 하단 글자 가독성을 위한 어두운 그라데이션 */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-        <span className="absolute left-4 top-4 rounded-full bg-modam-lime px-2.5 py-1 text-xs font-medium text-white">
-          확인된 동아리
-        </span>
-
         <div className="absolute inset-x-0 bottom-0 p-4 text-white">
           <h3 className="text-lg font-bold">{club.name}</h3>
           <p className="mt-1 text-sm text-white/85">{club.description}</p>
