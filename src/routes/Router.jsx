@@ -4,6 +4,7 @@ import ClubLayout from "../components/layout/ClubLayout";
 import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../features/auth/LoginPage";
 import MainPage from "../features/main/MainPage";
+import JoinClubPage from "../features/club/JoinClubPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -21,6 +22,7 @@ export default function Router() {
       <Route path="/login" element={<LoginPage />} />
       <Route element={<MainLayout />}>
         <Route path="/main" element={<MainPage />} />
+        <Route path="/club/join" element={<JoinClubPage />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/club/:clubId" element={<ClubLayout />}>
