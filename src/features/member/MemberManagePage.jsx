@@ -14,7 +14,6 @@ export default function MemberManagePage() {
     const [members, setMembers] = useState(MOCK_MEMBERS);
     const [capacity, setCapacity] = useState(30);
 
-    // 내보내기 대상 멤버
     const [kickTarget, setKickTarget] = useState(null);
 
     const filteredMembers = useMemo(() => {
@@ -23,19 +22,14 @@ export default function MemberManagePage() {
         );
     }, [members, keyword]);
 
-    // 내보내기 버튼 클릭
     const handleKick = (id) => {
         setKickTarget(id);
     };
 
-    // 모달 확인 클릭
     const confirmKick = () => {
         setMembers((prev) =>
             prev.filter((member) => member.id !== kickTarget)
         );
-
-        // TODO: 백엔드 연동
-        // await kickMember(kickTarget);
 
         setKickTarget(null);
     };
@@ -80,7 +74,6 @@ export default function MemberManagePage() {
                 </main>
             </div>
 
-            {/* 내보내기 확인 모달 */}
             <Modal
                 open={kickTarget !== null}
                 title="멤버 내보내기"

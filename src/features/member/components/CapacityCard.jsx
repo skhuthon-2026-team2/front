@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "../../../components/common/Modal";
-
-const CAPACITY_OPTIONS = [10, 20, 30, 40, 50, 100];
+import { CAPACITY_OPTIONS } from "../memberConstants";
 
 export default function CapacityCard({
     current = 12,
