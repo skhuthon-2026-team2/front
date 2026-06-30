@@ -10,23 +10,21 @@ export default function MemberTable({
 
                 <thead className="bg-gray-50">
                     <tr>
-
-                        <th className="px-6 py-4 text-left">
+                        <th className="w-[45%] px-8 py-5 text-left text-sm font-semibold text-gray-700">
                             멤버
                         </th>
 
-                        <th className="text-left">
+                        <th className="w-[20%] text-center text-sm font-semibold text-gray-700">
                             역할
                         </th>
 
-                        <th className="text-left">
+                        <th className="w-[20%] text-center text-sm font-semibold text-gray-700">
                             가입일
                         </th>
 
-                        <th className="text-center">
+                        <th className="w-[15%] text-center text-sm font-semibold text-gray-700">
                             관리
                         </th>
-
                     </tr>
                 </thead>
 

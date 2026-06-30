@@ -1,17 +1,18 @@
-export default function MemberRow({ member }) {
+export default function MemberRow({ member, onKick }) {
     const badgeStyle = {
         회장: "bg-red-100 text-red-500",
         일반회원: "bg-gray-100 text-gray-600",
     };
 
     return (
-        <tr className="border-t border-gray-100 hover:bg-gray-50 transition">
-            <td className="py-4">
-                <div className="flex items-center gap-3">
+        <tr className="border-t border-gray-100 transition hover:bg-gray-50">
+
+            <td className="px-8 py-5">
+                <div className="flex items-center gap-4">
                     <img
                         src={member.avatar}
                         alt={member.name}
-                        className="h-11 w-11 rounded-full object-cover"
+                        className="h-12 w-12 rounded-full object-cover"
                     />
 
                     <div>
@@ -19,26 +20,26 @@ export default function MemberRow({ member }) {
                             {member.name}
                         </p>
 
-                        <p className="text-sm text-gray-400">
+                        <p className="mt-1 text-sm text-gray-400">
                             {member.email}
                         </p>
                     </div>
                 </div>
             </td>
 
-            <td>
+            <td className="text-center">
                 <span
-                    className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeStyle[member.role]}`}
+                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${badgeStyle[member.role]}`}
                 >
                     {member.role}
                 </span>
             </td>
 
-            <td className="text-gray-500">
+            <td className="text-center text-gray-500">
                 {member.joinedAt}
             </td>
 
-            <td>
+            <td className="text-center">
                 {member.role === "회장" ? (
                     <span className="text-sm text-gray-400">
                         내 정보
@@ -46,12 +47,13 @@ export default function MemberRow({ member }) {
                 ) : (
                     <button
                         onClick={() => onKick(member.id)}
-                        className="rounded-lg bg-red-50 px-4 py-2 text-red-500 hover:bg-red-100"
+                        className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-100"
                     >
                         내보내기
                     </button>
                 )}
             </td>
+
         </tr>
     );
 }
