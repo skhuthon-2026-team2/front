@@ -40,14 +40,10 @@ export default function MemberRow({ member, onKick }) {
             </td>
 
             <td className="text-center">
-                {member.role === "회장" ? (
-                    <span className="text-sm text-gray-400">
-                        내 정보
-                    </span>
-                ) : (
+                {member.role !== "회장" && (
                     <button
                         onClick={() => onKick(member.id)}
-                        className="rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-500 transition hover:bg-red-100"
+                        className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-500 transition hover:bg-red-100"
                     >
                         내보내기
                     </button>

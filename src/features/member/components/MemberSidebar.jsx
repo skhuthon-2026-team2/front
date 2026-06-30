@@ -26,7 +26,7 @@ export default function MemberSidebar() {
                             }`
                         }
                     >
-                        👥 멤버 관리
+                        멤버 관리
                     </NavLink>
 
                     <NavLink
@@ -38,7 +38,7 @@ export default function MemberSidebar() {
                             }`
                         }
                     >
-                        📰 피드 관리
+                        피드 관리
                     </NavLink>
                 </nav>
             </div>
