@@ -17,6 +17,7 @@ export default function MainPage() {
           icon={<PlusIcon />}
           title="동아리 생성하기"
           description="당신만의 주제로 새로운 동아리를 만들고 함께할 팀원을 모집해보세요."
+          onClick={() => navigate("/club/create")}
         />
         <ActionCard
           accent="lime"
