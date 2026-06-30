@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import ProtectedRoute from "../components/common/ProtectedRoute";
+// import ProtectedRoute from "../components/common/ProtectedRoute";
 import ClubLayout from "../components/layout/ClubLayout";
 import MainLayout from "../components/layout/MainLayout";
 import LoginPage from "../features/auth/LoginPage";
@@ -7,6 +7,7 @@ import MainPage from "../features/main/MainPage";
 import JoinClubPage from "../features/club/JoinClubPage";
 import NicknamePage from "../features/club/NicknamePage";
 import CreateClubPage from "../features/club/CreateClubPage";
+import FeedPage from "../features/feed/FeedPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -28,38 +29,31 @@ export default function Router() {
         <Route path="/club/join/nickname" element={<NicknamePage />} />
         <Route path="/club/create" element={<CreateClubPage />} />
       </Route>
-      <Route element={<ProtectedRoute />}>
-        <Route path="/club/:clubId" element={<ClubLayout />}>
-          <Route
-            path="feed"
-            element={
-              <PlaceholderPage
-                title="피드"
-                description="동아리 피드 화면이 들어갈 자리입니다."
-              />
-            }
-          />
-          <Route
-            path="timeline"
-            element={
-              <PlaceholderPage
-                title="타임라인"
-                description="동아리 타임라인 화면이 들어갈 자리입니다."
-              />
-            }
-          />
-          <Route
-            path="ai"
-            element={
-              <PlaceholderPage
-                title="추천 AI"
-                description="추천 AI 화면이 들어갈 자리입니다."
-              />
-            }
-          />
-          <Route index element={<Navigate to="feed" replace />} />
-        </Route>
+
+      {/* 확인용 임시: ProtectedRoute 밖으로 빼둠. 인증 붙이면 아래 블록으로 되돌릴 것 */}
+      <Route path="/club/:clubId" element={<ClubLayout />}>
+        <Route path="feed" element={<FeedPage />} />
+        <Route
+          path="timeline"
+          element={
+            <PlaceholderPage
+              title="타임라인"
+              description="동아리 타임라인 화면이 들어갈 자리입니다."
+            />
+          }
+        />
+        <Route
+          path="ai"
+          element={
+            <PlaceholderPage
+              title="추천 AI"
+              description="추천 AI 화면이 들어갈 자리입니다."
+            />
+          }
+        />
+        <Route index element={<Navigate to="feed" replace />} />
       </Route>
+
       <Route
         path="*"
         element={

@@ -1,37 +1,24 @@
-import { NavLink, Outlet, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
+import { CLUB_TABS } from "../../features/club/constants";
+import Header from "./Header";
+
+const MOCK_CLUB = {
+  id: 1,
+  name: "연세 사진 동아리 '찰나'",
+  role: "회장",
+};
 
 export default function ClubLayout() {
   const { clubId } = useParams();
-  const base = `/club/${clubId}`;
+  const club = MOCK_CLUB;
+  const isOwner = club.role === "회장";
 
-  const tabs = [
-    { to: `${base}/feed`, label: "피드" },
-    { to: `${base}/timeline`, label: "타임라인" },
-    { to: `${base}/ai`, label: "추천 AI" },
-  ];
+  const tabs = CLUB_TABS.filter((tab) => !tab.ownerOnly || isOwner);
 
   return (
-    <div className="w-full">
-      <nav className="flex gap-4 border-b border-gray-200 px-4">
-        {tabs.map((tab) => (
-          <NavLink
-            key={tab.to}
-            to={tab.to}
-            className={({ isActive }) =>
-              `py-3 px-2 border-b-2 transition-colors ${
-                isActive
-                  ? "text-black font-bold border-black"
-                  : "text-gray-500 font-normal border-transparent"
-              }`
-            }
-          >
-            {tab.label}
-          </NavLink>
-        ))}
-      </nav>
-      <main className="p-4">
-        <Outlet />
-      </main>
+    <div className="min-h-dvh bg-[#faf9f8]">
+      <Header showSearch tabs={tabs} clubId={clubId} />
+      <Outlet context={{ club }} />
     </div>
   );
 }
