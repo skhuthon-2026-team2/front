@@ -6,6 +6,7 @@ import LoginPage from "../features/auth/LoginPage";
 import MainPage from "../features/main/MainPage";
 import JoinClubPage from "../features/club/JoinClubPage";
 import NicknamePage from "../features/club/NicknamePage";
+import CreateClubPage from "../features/club/CreateClubPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -25,6 +26,7 @@ export default function Router() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/club/join" element={<JoinClubPage />} />
         <Route path="/club/join/nickname" element={<NicknamePage />} />
+        <Route path="/club/create" element={<CreateClubPage />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/club/:clubId" element={<ClubLayout />}>
