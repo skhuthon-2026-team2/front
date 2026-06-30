@@ -1,6 +1,6 @@
 import { ArrowIcon } from "./icons";
 
-export default function ActionCard({ icon, title, description, accent }) {
+export default function ActionCard({ icon, title, description, accent, onClick }) {
   const accentStyle =
     accent === "coral"
       ? "bg-modam-coral/10 text-modam-coral"
@@ -9,6 +9,7 @@ export default function ActionCard({ icon, title, description, accent }) {
   return (
     <button
       type="button"
+      onClick={onClick}
       className="group relative flex flex-col rounded-2xl border border-gray-100 bg-white p-6 text-left transition-all hover:border-gray-200 hover:shadow-md"
     >
       <span className={`flex h-11 w-11 items-center justify-center rounded-xl ${accentStyle}`}>
