@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Modal from "../../components/common/Modal";
 import InviteCodeInput from "./components/InviteCodeInput";
 import ClubPreviewCard from "./components/ClubPreviewCard";
@@ -13,10 +14,10 @@ const MOCK_CLUB = {
   createdAt: "2026.01",
 };
 
-// 연동 전 임시 검증값. "MD2640"만 유효한 코드로 취급한다.
 const VALID_CODE = "MD2640";
 
 export default function JoinClubPage() {
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [club, setClub] = useState(null);
   const [error, setError] = useState("");
@@ -34,6 +35,7 @@ export default function JoinClubPage() {
 
   const handleConfirmJoin = () => {
     setConfirmOpen(false);
+    navigate("/club/join/nickname");
   };
 
   return (
