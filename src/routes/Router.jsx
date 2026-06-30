@@ -8,6 +8,7 @@ import JoinClubPage from "../features/club/JoinClubPage";
 import NicknamePage from "../features/club/NicknamePage";
 import CreateClubPage from "../features/club/CreateClubPage";
 import FeedPage from "../features/feed/FeedPage";
+import WriteFeedPage from "../features/feed/WriteFeedPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -33,6 +34,7 @@ export default function Router() {
       {/* 확인용 임시: ProtectedRoute 밖으로 빼둠. 인증 붙이면 아래 블록으로 되돌릴 것 */}
       <Route path="/club/:clubId" element={<ClubLayout />}>
         <Route path="feed" element={<FeedPage />} />
+        <Route path="write" element={<WriteFeedPage />} />
         <Route
           path="timeline"
           element={
