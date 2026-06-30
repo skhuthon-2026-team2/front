@@ -1,4 +1,9 @@
+import { useNavigate, useParams } from "react-router-dom";
+
 export default function ClubSidebar({ club }) {
+  const navigate = useNavigate();
+  const { clubId } = useParams();
+
   return (
     <aside className="w-full max-w-[260px] shrink-0">
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -27,6 +32,7 @@ export default function ClubSidebar({ club }) {
 
         <button
           type="button"
+          onClick={() => navigate(`/club/${clubId}/write`)}
           className="mt-4 w-full rounded-xl bg-modam-coral py-3 text-sm font-bold text-white transition hover:brightness-95"
         >
           + 새 활동 기록하기
