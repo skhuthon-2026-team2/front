@@ -1,12 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import ActionCard from "./components/ActionCard";
 import ClubCard from "./components/ClubCard";
 import EmptyClubs from "./components/EmptyClubs";
 import { PlusIcon, SearchIcon } from "./components/icons";
 
-// 내가 속한 동아리 — API 연동 전이라 빈 배열. 값이 있으면 카드 그리드, 없으면 안내 화면.
 const myClubs = [];
 
 export default function MainPage() {
+  const navigate = useNavigate();
+
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -21,6 +23,7 @@ export default function MainPage() {
           icon={<SearchIcon />}
           title="동아리 가입하기"
           description="취향이 맞는 사람들과 소통하고 싶나요? 관심 있는 동아리를 찾아 가입해보세요."
+          onClick={() => navigate("/club/join")}
         />
       </div>
 
