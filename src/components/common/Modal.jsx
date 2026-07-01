@@ -21,12 +21,14 @@ export default function Modal({
         {title && <h3 className="mb-3 text-lg font-bold">{title}</h3>}
         <div className="text-sm text-gray-600">{children}</div>
         <div className="mt-5 flex justify-end gap-2">
-          <button
-            className="rounded-lg bg-gray-200 px-4 py-2 text-sm text-gray-600"
-            onClick={onClose}
-          >
-            {cancelText}
-          </button>
+          {cancelText && (
+            <button
+              className="rounded-lg bg-gray-200 px-4 py-2 text-sm text-gray-600"
+              onClick={onClose}
+            >
+              {cancelText}
+            </button>
+          )}
           <button
             className="rounded-lg bg-black px-4 py-2 text-sm text-white"
             onClick={onConfirm}
