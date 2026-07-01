@@ -5,10 +5,10 @@ import Modal from "../../components/common/Modal";
 const MAX_IMAGE_MB = 5;
 
 export default function BasicProfilePage() {
-    const [user] = useState({
+    const USER = {
         name: "김서연",
         email: "kim@example.com",
-    });
+    };
 
     const [preview, setPreview] = useState("https://i.pravatar.cc/300?img=47");
     const [saveModalOpen, setSaveModalOpen] = useState(false);
@@ -69,7 +69,7 @@ export default function BasicProfilePage() {
                     <label className="block font-bold text-gray-900">이름</label>
 
                     <input
-                        value={user.name}
+                        value={USER.name}
                         disabled
                         className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
                     />
@@ -111,7 +111,7 @@ export default function BasicProfilePage() {
                 open={imageErrorModalOpen}
                 title="업로드 실패"
                 confirmText="확인"
-                cancelText=""
+                cancelText={null}
                 onClose={() => setImageErrorModalOpen(false)}
                 onConfirm={() => setImageErrorModalOpen(false)}
             >

@@ -64,7 +64,7 @@ export default function ClubProfilePage() {
 
                             <button
                                 type="button"
-                                onClick={() => handleSave(profile.id)}
+                                onClick={handleSave}
                                 disabled={!profile.nickname.trim()}
                                 className="rounded-xl bg-modam-coral px-5 py-3 text-sm font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
                             >
