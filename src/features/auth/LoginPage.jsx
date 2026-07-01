@@ -6,10 +6,11 @@ import { useAuthStore } from "../../stores/authStore";
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?${new URLSearchParams(
   {
     client_id: import.meta.env.VITE_KAKAO_REST_API_KEY,
-    redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI ?? `${window.location.origin}/login`,
+    // Default redirect should match the route that handles the callback in Router.jsx
+    redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI ?? `${window.location.origin}/oauth/kakao`,
     response_type: "code",
   }
-)}`;
+)}\`; 
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
