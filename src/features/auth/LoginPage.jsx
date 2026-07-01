@@ -1,10 +1,17 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuthStore } from "../../stores/authStore";
+
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?${new URLSearchParams(
   {
     client_id: import.meta.env.VITE_KAKAO_REST_API_KEY,
-    redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI,
+    redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI ?? `${window.location.origin}/login`,
     response_type: "code",
   }
 )}`;
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
 function Sparkle({ className }) {
   return (
@@ -20,8 +27,58 @@ function Sparkle({ className }) {
 }
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const code = new URLSearchParams(window.location.search).get("code");
+
+    if (!code) return;
+
+    let cancelled = false;
+
+    const loginWithKakaoCode = async () => {
+      setIsLoading(true);
+
+      try {
+        const response = await axios.get(`${API_BASE_URL}/api/auth/login/kakao`, {
+          params: { code },
+        });
+        const tokenData = response.data?.data ?? {};
+
+        if (tokenData.accessToken) {
+          localStorage.setItem("accessToken", tokenData.accessToken);
+        }
+
+        if (tokenData.refreshToken) {
+          localStorage.setItem("refreshToken", tokenData.refreshToken);
+        }
+
+        useAuthStore.setState({ isLoggedIn: true });
+
+        if (!cancelled) {
+          navigate("/main", { replace: true });
+        }
+      } catch {
+        if (!cancelled) {
+          navigate("/login", { replace: true });
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loginWithKakaoCode();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
+
   const handleKakaoLogin = () => {
-    window.location.href = KAKAO_AUTH_URL;
+    window.location.assign(KAKAO_AUTH_URL);
   };
 
   return (
@@ -58,7 +115,9 @@ export default function LoginPage() {
       </div>
 
       <button
+        type="button"
         onClick={handleKakaoLogin}
+        disabled={isLoading}
         className="mt-28 flex w-full max-w-xs animate-rise items-center justify-center gap-2 rounded-xl bg-[#FEE500] py-3.5 text-[15px] font-medium text-black/85 transition-transform active:scale-[0.98]"
         style={{ animationDelay: "300ms" }}
       >
