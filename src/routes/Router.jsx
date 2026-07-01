@@ -11,6 +11,10 @@ import FeedPage from "../features/feed/FeedPage";
 import WriteFeedPage from "../features/feed/WriteFeedPage";
 import FeedManagePage from "../features/member/FeedManagePage";
 import MemberManagePage from "../features/member/MemberManagePage";
+import BasicProfilePage from "../features/mypage/BasicProfilePage";
+import ClubProfilePage from "../features/mypage/ClubProfilePage";
+import MyFeedPage from "../features/mypage/MyFeedPage";
+import TimelinePage from "../features/mypage/TimelinePage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -31,6 +35,12 @@ export default function Router() {
         <Route path="/club/join" element={<JoinClubPage />} />
         <Route path="/club/join/nickname" element={<NicknamePage />} />
         <Route path="/club/create" element={<CreateClubPage />} />
+
+        <Route path="/mypage" element={<Navigate to="/mypage/profile" replace />} />
+        <Route path="/mypage/profile" element={<BasicProfilePage />} />
+        <Route path="/mypage/clubs" element={<ClubProfilePage />} />
+        <Route path="/mypage/feeds" element={<MyFeedPage />} />
+        <Route path="/mypage/timeline" element={<TimelinePage />} />
       </Route>
 
       {/* 확인용 임시: ProtectedRoute 밖으로 빼둠. 인증 붙이면 아래 블록으로 되돌릴 것 */}
