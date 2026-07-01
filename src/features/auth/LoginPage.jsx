@@ -10,7 +10,7 @@ const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?${new URLSearchP
     redirect_uri: import.meta.env.VITE_KAKAO_REDIRECT_URI ?? `${window.location.origin}/oauth/kakao`,
     response_type: "code",
   }
-)}\`; 
+)}`;
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "";
 
