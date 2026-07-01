@@ -83,7 +83,7 @@ export default function BasicProfilePage() {
                     <label className="block font-bold text-gray-900">이메일</label>
 
                     <input
-                        value={user.email}
+                        value={USER.email}
                         disabled
                         className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
                     />
