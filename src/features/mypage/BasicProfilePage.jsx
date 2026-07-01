@@ -97,12 +97,11 @@ export default function BasicProfilePage() {
                     저장하기
                 </button>
             </div>
-
             <Modal
                 open={saveModalOpen}
                 title="저장 완료"
                 confirmText="확인"
-                cancelText="닫기"
+                cancelText={null}
                 onClose={() => setSaveModalOpen(false)}
                 onConfirm={() => setSaveModalOpen(false)}
             >
