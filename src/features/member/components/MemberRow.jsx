@@ -1,6 +1,6 @@
 export default function MemberRow({ member, onKick }) {
     const badgeStyle = {
-        회장: "bg-red-100 text-red-500",
+        회장: "bg-modam-coral text-white",
         일반회원: "bg-gray-100 text-gray-600",
     };
 

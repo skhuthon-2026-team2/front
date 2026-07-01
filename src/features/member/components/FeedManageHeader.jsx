@@ -25,7 +25,7 @@ export default function FeedManageHeader({
                 className={`rounded-xl px-5 py-3 text-sm font-semibold text-white transition
         ${selected === 0
                         ? "cursor-not-allowed bg-gray-300"
-                        : "bg-red-500 hover:bg-red-600"
+                        : "bg-modam-coral hover:brightness-95"
                     }`}
             >
                 선택 삭제
