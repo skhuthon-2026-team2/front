@@ -20,7 +20,12 @@ export default function KakaoCallback() {
         localStorage.setItem("refreshToken", refreshToken);
         navigate("/main", { replace: true });
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error("로그인 실패", err);
+        console.error("응답", err.response);
+
+        alert(JSON.stringify(err.response?.data));
+
         navigate("/login", { replace: true });
       });
   }, [searchParams, navigate]);
