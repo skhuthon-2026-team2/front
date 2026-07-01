@@ -15,6 +15,7 @@ import BasicProfilePage from "../features/mypage/BasicProfilePage";
 import ClubProfilePage from "../features/mypage/ClubProfilePage";
 import MyFeedPage from "../features/mypage/MyFeedPage";
 import TimelinePage from "../features/mypage/TimelinePage";
+import KakaoCallback from "../features/auth/KakaoCallback";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -30,6 +31,7 @@ export default function Router() {
     <Routes>
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/oauth/kakao" element={<KakaoCallback />} />
       <Route element={<MainLayout />}>
         <Route path="/main" element={<MainPage />} />
         <Route path="/club/join" element={<JoinClubPage />} />
