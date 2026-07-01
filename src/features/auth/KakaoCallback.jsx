@@ -8,27 +8,37 @@ export default function KakaoCallback() {
   const called = useRef(false);
 
   useEffect(() => {
-    const code = searchParams.get("code");
-    if (!code || called.current) return;
-    called.current = true;
+  console.log("=== KakaoCallback 실행 ===");
 
-    api
-      .get("/api/auth/login/kakao", { params: { code } })
-      .then((res) => {
-        const { accessToken, refreshToken } = res.data.data;
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
-        navigate("/main", { replace: true });
-      })
-      .catch((err) => {
-        console.error("로그인 실패", err);
-        console.error("응답", err.response);
+  const code = searchParams.get("code");
+  console.log("code:", code);
 
-        alert(JSON.stringify(err.response?.data));
+  if (!code || called.current) return;
+  called.current = true;
 
-        navigate("/login", { replace: true });
-      });
-  }, [searchParams, navigate]);
+  console.log("백엔드 요청 시작");
+
+  api
+    .get("/api/auth/login/kakao", { params: { code } })
+    .then((res) => {
+      console.log("성공", res);
+
+      const { accessToken, refreshToken } = res.data.data;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      navigate("/main", { replace: true });
+    })
+    .catch((err) => {
+      console.error("로그인 실패", err);
+      console.error("status", err.response?.status);
+      console.error("data", err.response?.data);
+
+      alert(JSON.stringify(err.response?.data));
+
+      navigate("/login", { replace: true });
+    });
+}, [searchParams, navigate]);
 
   return (
     <div className="flex min-h-dvh items-center justify-center bg-white">
