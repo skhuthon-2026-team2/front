@@ -17,6 +17,7 @@ export default function KakaoCallback() {
       .get("/api/auth/login/kakao", { params: { code } })
       .then((response) => {
         const auth = response.data?.data ?? {};
+        const savedUserId = auth.userId ?? auth.id;
 
         if (auth.accessToken) {
           localStorage.setItem("accessToken", auth.accessToken);
@@ -24,8 +25,12 @@ export default function KakaoCallback() {
         if (auth.refreshToken) {
           localStorage.setItem("refreshToken", auth.refreshToken);
         }
-        if (auth.userId !== undefined && auth.userId !== null) {
-          localStorage.setItem("userId", String(auth.userId));
+        if (savedUserId !== undefined && savedUserId !== null) {
+          localStorage.setItem("userId", String(savedUserId));
+        }
+
+        if (!auth.accessToken) {
+          throw new Error("missing accessToken");
         }
 
         useAuthStore.setState({ isLoggedIn: true });

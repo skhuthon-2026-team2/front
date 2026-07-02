@@ -18,7 +18,14 @@ export default function CreateClubPage() {
 
   const createClubMutation = useMutation({
     mutationFn: (payload) => createClub(payload),
-    onSuccess: async () => {
+    onSuccess: async (createdClub) => {
+      if (createdClub?.clubId) {
+        queryClient.setQueryData(["my-clubs"], (prev = []) => {
+          if (!Array.isArray(prev)) return [createdClub];
+          if (prev.some((club) => club.clubId === createdClub.clubId)) return prev;
+          return [createdClub, ...prev];
+        });
+      }
       await queryClient.invalidateQueries({ queryKey: ["my-clubs"] });
       navigate("/main", { replace: true });
     },
