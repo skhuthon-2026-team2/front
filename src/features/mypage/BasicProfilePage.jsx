@@ -3,7 +3,17 @@ import MyPageFrame from "./components/MyPageFrame";
 import Modal from "../../components/common/Modal";
 import { useUserStore } from "../../stores/userStore";
 
+import profile1 from "./components/img/profile1.png";
+import profile2 from "./components/img/profile2.png";
+import profile3 from "./components/img/profile3.png";
+
 const MAX_IMAGE_MB = 5;
+
+const DEFAULT_PROFILE_IMAGES = [
+    profile1,
+    profile2,
+    profile3,
+];
 
 export default function BasicProfilePage() {
     const { user, setProfileImage } = useUserStore();
@@ -63,6 +73,32 @@ export default function BasicProfilePage() {
                     </div>
 
                     <p className="mt-2 text-xs text-gray-400">JPG, PNG (최대 5MB)</p>
+
+                    <div className="mt-6">
+                        <p className="mb-3 text-sm font-semibold text-gray-700">
+                            기본 프로필 선택
+                        </p>
+
+                        <div className="flex gap-4">
+                            {DEFAULT_PROFILE_IMAGES.map((image) => (
+                                <button
+                                    key={image}
+                                    type="button"
+                                    onClick={() => setPreview(image)}
+                                    className={`rounded-full p-1 transition ${preview === image
+                                            ? "ring-2 ring-modam-coral ring-offset-2"
+                                            : "hover:opacity-80"
+                                        }`}
+                                >
+                                    <img
+                                        src={image}
+                                        alt="기본 프로필"
+                                        className="h-14 w-14 rounded-full object-cover"
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mt-8">
