@@ -38,3 +38,12 @@ export const getMyFeeds = (page = 0, size = 20) =>
             size,
         },
     });
+// 타임라인 목록 조회
+export const getMyTimelines = (page = 0, size = 20) =>
+    api.get("/api/mypage/timelines", {
+        params: {
+            userId: userId(),
+            page,
+            size,
+        },
+    });
