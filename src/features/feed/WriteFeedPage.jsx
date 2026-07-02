@@ -1,21 +1,29 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFeedStore } from "../../stores/feedStore";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPost } from "../../apis/post";
 import DateRangePicker from "./components/DateRangePicker";
 import WriteSidebar from "./components/WriteSidebar";
 
 const MAX_IMAGES = 10;
-const AUTHOR = { name: "김서연", avatar: "https://i.pravatar.cc/80?img=47" };
 
 export default function WriteFeedPage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const addFeed = useFeedStore((state) => state.addFeed);
+  const queryClient = useQueryClient();
 
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(null);
   const [images, setImages] = useState([]);
   const [content, setContent] = useState("");
+
+  const { mutate: submitPost, isPending } = useMutation({
+    mutationFn: (body) => createPost(clubId, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["club-posts", clubId] });
+      navigate(`/club/${clubId}/feed`);
+    },
+  });
 
   const handleAddImages = (e) => {
     const files = Array.from(e.target.files ?? []);
@@ -24,16 +32,12 @@ export default function WriteFeedPage() {
   };
 
   const handleUpload = () => {
-    const createdAt = date?.start ?? "";
-    addFeed({
-      author: AUTHOR,
+    submitPost({
       title,
       content,
-      images,
-      createdAt,
-      dateRange: date,
+      imageUrls: images,
+      activityDate: date?.start ? date.start.replaceAll(".", "-") : null,
     });
-    navigate(`/club/${clubId}/feed`);
   };
 
   const emptySlots = Math.max(0, 4 - images.length - 1);
@@ -54,7 +58,7 @@ export default function WriteFeedPage() {
             <button
               type="button"
               onClick={handleUpload}
-              disabled={!title.trim()}
+              disabled={!title.trim() || isPending}
               className="rounded-lg bg-modam-coral px-5 py-2 text-sm font-bold text-white transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
             >
               업로드
