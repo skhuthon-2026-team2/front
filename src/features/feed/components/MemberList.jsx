@@ -8,20 +8,17 @@ export default function MemberList({ members = [], totalCount }) {
 
       <div className="mt-4 flex flex-col gap-3">
         {members.map((m) => (
-          <div key={m.id} className="flex items-center gap-3">
-            <img src={m.avatar} alt={m.name} className="h-9 w-9 rounded-full object-cover" />
+          <div key={m.clubMemberId} className="flex items-center gap-3">
+            <img src={m.profileImage} alt={m.nickname} className="h-9 w-9 rounded-full object-cover" />
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-bold text-gray-900">{m.name}</p>
-              <p className="truncate text-xs text-gray-400">{m.status}</p>
+              <p className="truncate text-sm font-bold text-gray-900">{m.nickname}</p>
             </div>
+            {m.role === "OWNER" && <span className="text-xs font-medium text-modam-coral">회장</span>}
           </div>
         ))}
       </div>
 
-      <button
-        type="button"
-        className="mt-4 w-full text-center text-xs text-gray-400 transition-colors hover:text-gray-600"
-      >
+      <button type="button" className="mt-4 w-full text-center text-xs text-gray-400 transition-colors hover:text-gray-600">
         멤버 전체보기 ›
       </button>
     </div>

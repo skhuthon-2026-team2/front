@@ -8,25 +8,20 @@ export default function ClubSidebar({ club }) {
     <aside className="w-full max-w-[260px] shrink-0">
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
         <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gray-100">
-          <img src={club.image} alt={club.name} className="h-full w-full object-cover" />
-          {club.role === "회장" && (
-            <span className="absolute right-2 top-2 rounded-full bg-modam-coral px-2.5 py-1 text-xs font-medium text-white">
-              회장
-            </span>
-          )}
+          {club.clubImageUrl && <img src={club.clubImageUrl} alt={club.clubName} className="h-full w-full object-cover" />}
         </div>
 
-        <h2 className="mt-4 font-bold text-gray-900">{club.name}</h2>
+        <h2 className="mt-4 font-bold text-gray-900">{club.clubName}</h2>
         <p className="mt-1.5 text-sm leading-relaxed text-gray-500">{club.description}</p>
 
         <div className="mt-4 flex border-y border-gray-100 py-3 text-center">
           <div className="flex-1">
             <p className="text-xs text-gray-400">멤버</p>
-            <p className="text-sm font-bold text-gray-900">{club.memberCount}명</p>
+            <p className="text-sm font-bold text-gray-900">{club.currentMembers}명</p>
           </div>
           <div className="flex-1 border-l border-gray-100">
             <p className="text-xs text-gray-400">게시글</p>
-            <p className="text-sm font-bold text-gray-900">{club.postCount}개</p>
+            <p className="text-sm font-bold text-gray-900">{club.totalPostCount}개</p>
           </div>
         </div>
 

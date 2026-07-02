@@ -1,15 +1,19 @@
 export default function FeedCard({ feed }) {
-  const images = feed.images ?? [];
+  const images = Array.isArray(feed.imageUrls)
+    ? feed.imageUrls
+    : feed.imageUrls
+    ? feed.imageUrls.split(",").map((s) => s.trim()).filter(Boolean)
+    : [];
   const visible = images.slice(0, 3);
   const remaining = images.length - visible.length;
 
   return (
     <article className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
       <header className="flex items-center gap-3">
-        <img src={feed.author.avatar} alt={feed.author.name} className="h-10 w-10 rounded-full object-cover" />
+        <img src={feed.writerProfileImage} alt={feed.writerNickname} className="h-10 w-10 rounded-full object-cover" />
         <div>
-          <p className="text-sm font-bold text-gray-900">{feed.author.name}</p>
-          <p className="text-xs text-gray-400">{feed.createdAt}</p>
+          <p className="text-sm font-bold text-gray-900">{feed.writerNickname}</p>
+          <p className="text-xs text-gray-400">{feed.activityDate}</p>
         </div>
       </header>
 

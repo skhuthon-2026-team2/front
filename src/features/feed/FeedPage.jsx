@@ -1,90 +1,59 @@
 import { useState } from "react";
-import { useFeedStore } from "../../stores/feedStore";
+import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getClub, getClubMembers } from "../../apis/club";
+import { getClubPosts } from "../../apis/post";
 import ClubSidebar from "../club/components/ClubSidebar";
 import ActivityCalendar from "./components/ActivityCalendar";
 import MemberList from "./components/MemberList";
 import FeedCard from "./components/FeedCard";
 
-const CLUB = {
-  id: 1,
-  name: "연세 사진 동아리 '찰나'",
-  description: "평범한 일상을 특별한 기록으로 남기는 사진 예술 동아리입니다.",
-  image: "https://picsum.photos/seed/chalna/400/300",
-  role: "회장",
-  memberCount: 42,
-  postCount: 128,
-};
-
-const MEMBERS = [
-  { id: 1, name: "박준형", status: "오늘 3개의 기록을 남겼어요", avatar: "https://i.pravatar.cc/80?img=12" },
-  { id: 2, name: "이동욱", status: "최근에 가입했어요", avatar: "https://i.pravatar.cc/80?img=33" },
-  { id: 3, name: "최지원", status: "12일 연속 기록 중", avatar: "https://i.pravatar.cc/80?img=45" },
-  { id: 4, name: "한소희", status: "풍경 사진의 대가", avatar: "https://i.pravatar.cc/80?img=20" },
-];
-
-const DUMMY_FEEDS = [
-  {
-    id: "dummy-1",
-    author: { name: "박준형", avatar: "https://i.pravatar.cc/80?img=12" },
-    createdAt: "2026.05.03",
-    title: "노을지는 한강의 순간들을 담아봤어요",
-    content:
-      "이번 정기 출사는 반포 한강 공원에서 진행했습니다. 날씨가 너무 맑아서 노을이 정말 예쁘게 졌어요.",
-    images: [
-      "https://picsum.photos/seed/sunset/400/400",
-      "https://picsum.photos/seed/people/400/400",
-      "https://picsum.photos/seed/camera/400/400",
-      "https://picsum.photos/seed/extra1/400/400",
-    ],
-  },
-  {
-    id: "dummy-2",
-    author: { name: "이지민", avatar: "https://i.pravatar.cc/80?img=5" },
-    createdAt: "2026.05.06",
-    title: "인물 사진 조명 활용법 스터디",
-    content: "동아리방에서 진행된 조명 스터디! 3점 조명의 기초부터 실습까지 알찬 시간이었습니다.",
-    images: [],
-  },
-];
-
 export default function FeedPage() {
+  const { clubId } = useParams();
   const [range, setRange] = useState(null);
-  const storeFeeds = useFeedStore((state) => state.feeds);
 
-  const allFeeds = [...storeFeeds, ...DUMMY_FEEDS];
+  const { data: club } = useQuery({
+    queryKey: ["club", clubId],
+    queryFn: () => getClub(clubId),
+  });
+
+  const { data: posts = [] } = useQuery({
+    queryKey: ["club-posts", clubId],
+    queryFn: () => getClubPosts(clubId),
+  });
+
+  const { data: members = [] } = useQuery({
+    queryKey: ["club-members", clubId],
+    queryFn: () => getClubMembers(clubId),
+  });
 
   const handleSelect = (dateStr) => {
-    if (dateStr === null) {
-      setRange(null);
-    } else if (!range?.start || range.end) {
-      setRange({ start: dateStr });
-    } else {
+    if (dateStr === null) setRange(null);
+    else if (!range?.start || range.end) setRange({ start: dateStr });
+    else {
       const [start, end] = [range.start, dateStr].sort();
       setRange({ start, end });
     }
   };
 
-  const postedDays = allFeeds.map((f) => f.createdAt).filter(Boolean);
+  // activityDate(YYYY-MM-DD) → 캘린더/필터는 YYYY.MM.DD 형식이라 변환
+  const toDot = (d) => (d ? d.replaceAll("-", ".") : "");
+  const postedDays = posts.map((p) => toDot(p.activityDate)).filter(Boolean);
 
-  const filteredFeeds = !range?.start
-    ? allFeeds
-    : allFeeds.filter((f) => {
+  const filteredPosts = !range?.start
+    ? posts
+    : posts.filter((p) => {
+        const d = toDot(p.activityDate);
         const end = range.end ?? range.start;
-        return f.createdAt >= range.start && f.createdAt <= end;
+        return d >= range.start && d <= end;
       });
 
   return (
     <div className="mx-auto flex w-full max-w-6xl gap-6 px-6 py-8">
       <div className="flex w-full max-w-[260px] shrink-0 flex-col gap-4">
-        <ClubSidebar club={CLUB} />
-        <ActivityCalendar
-          year={2026}
-          month={5}
-          postedDays={postedDays}
-          range={range}
-          onSelect={handleSelect}
-        />
-        <MemberList members={MEMBERS} totalCount={CLUB.memberCount} />
+        {club && <ClubSidebar club={club} />}
+        <ActivityCalendar year={2026} month={5} postedDays={postedDays} range={range} onSelect={handleSelect} />
+        <MemberList members={members} totalCount={club?.currentMembers ?? members.length} />
       </div>
 
       <main className="min-w-0 flex-1">
@@ -98,11 +67,11 @@ export default function FeedPage() {
         </div>
 
         <div className="mt-4 flex flex-col gap-4">
-          {filteredFeeds.length > 0 ? (
-            filteredFeeds.map((feed) => <FeedCard key={feed.id} feed={feed} />)
+          {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => <FeedCard key={post.postId} feed={post} />)
           ) : (
             <div className="rounded-2xl border border-gray-100 bg-white py-16 text-center text-sm text-gray-400">
-              선택한 날짜에 올라온 글이 없어요.
+              아직 올라온 글이 없어요.
             </div>
           )}
         </div>
