@@ -20,6 +20,7 @@ import ClubTimelinePage from "../features/timeline/ClubTimelinePage";
 import TimelineDetailPage from "../features/timeline/TimelineDetailPage";
 import CreateTimelinePage from "../features/timeline/CreateTimelinePage";
 import SlideshowEditPage from "../features/timeline/SlideshowEditPage";
+import AiRecommendPage from "../features/ai/AiRecommendPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -57,15 +58,8 @@ export default function Router() {
         <Route path="timeline" element={<ClubTimelinePage />} />
         <Route path="timeline/create" element={<CreateTimelinePage />} />
         <Route path="timeline/create/slideshow" element={<SlideshowEditPage />} />
-        <Route
-          path="ai"
-          element={
-            <PlaceholderPage
-              title="추천 AI"
-              description="추천 AI 화면이 들어갈 자리입니다."
-            />
-          }
-        />
+        <Route path="ai" element={<AiRecommendPage />} />
+
         <Route path="members" element={<MemberManagePage />} />
         <Route path="members/feed" element={<FeedManagePage />} />
         <Route index element={<Navigate to="feed" replace />} />
