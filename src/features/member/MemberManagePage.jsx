@@ -35,7 +35,9 @@ export default function MemberManagePage() {
                 name: member.nickname,
                 avatar: member.profileImage || "https://i.pravatar.cc/150?img=47",
                 role: member.role === "OWNER" ? "회장" : "일반회원",
-                joinedAt: "-",
+                joinedAt: member.createdAt
+                    ? member.createdAt.slice(0, 10)
+                    : "-",
             }));
 
             setMembers(mappedMembers);
