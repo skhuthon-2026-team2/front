@@ -1,12 +1,11 @@
 export default function MemberRow({ member, onKick }) {
     const badgeStyle = {
-        회장: "bg-red-100 text-red-500",
+        회장: "bg-modam-coral text-white",
         일반회원: "bg-gray-100 text-gray-600",
     };
 
     return (
         <tr className="border-t border-gray-100 transition hover:bg-gray-50">
-
             <td className="px-8 py-5">
                 <div className="flex items-center gap-4">
                     <img
@@ -15,15 +14,9 @@ export default function MemberRow({ member, onKick }) {
                         className="h-12 w-12 rounded-full object-cover"
                     />
 
-                    <div>
-                        <p className="font-semibold text-gray-900">
-                            {member.name}
-                        </p>
-
-                        <p className="mt-1 text-sm text-gray-400">
-                            {member.email}
-                        </p>
-                    </div>
+                    <p className="font-semibold text-gray-900">
+                        {member.name}
+                    </p>
                 </div>
             </td>
 
@@ -36,7 +29,7 @@ export default function MemberRow({ member, onKick }) {
             </td>
 
             <td className="text-center text-gray-500">
-                {member.joinedAt}
+                {member.joinedAt || "-"}
             </td>
 
             <td className="text-center">
@@ -49,7 +42,6 @@ export default function MemberRow({ member, onKick }) {
                     </button>
                 )}
             </td>
-
         </tr>
     );
 }
