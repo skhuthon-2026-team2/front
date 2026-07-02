@@ -1,16 +1,14 @@
 import { useState } from "react";
 import MyPageFrame from "./components/MyPageFrame";
 import Modal from "../../components/common/Modal";
+import { useUserStore } from "../../stores/userStore";
 
 const MAX_IMAGE_MB = 5;
 
 export default function BasicProfilePage() {
-    const USER = {
-        name: "김서연",
-        email: "kim@example.com",
-    };
+    const { user, setProfileImage } = useUserStore();
 
-    const [preview, setPreview] = useState("https://i.pravatar.cc/300?img=47");
+    const [preview, setPreview] = useState(user.profileImage);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
     const [imageErrorModalOpen, setImageErrorModalOpen] = useState(false);
 
@@ -24,11 +22,13 @@ export default function BasicProfilePage() {
             return;
         }
 
-        setPreview(URL.createObjectURL(file));
+        const imageUrl = URL.createObjectURL(file);
+
+        setPreview(imageUrl);
     };
 
     const handleSave = () => {
-        // TODO : 프로필 수정 API
+        setProfileImage(preview);
         setSaveModalOpen(true);
     };
 
@@ -69,7 +69,7 @@ export default function BasicProfilePage() {
                     <label className="block font-bold text-gray-900">이름</label>
 
                     <input
-                        value={USER.name}
+                        value={user.name}
                         disabled
                         className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
                     />
@@ -83,7 +83,7 @@ export default function BasicProfilePage() {
                     <label className="block font-bold text-gray-900">이메일</label>
 
                     <input
-                        value={USER.email}
+                        value={user.email}
                         disabled
                         className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
                     />
@@ -97,6 +97,7 @@ export default function BasicProfilePage() {
                     저장하기
                 </button>
             </div>
+
             <Modal
                 open={saveModalOpen}
                 title="저장 완료"
@@ -107,6 +108,7 @@ export default function BasicProfilePage() {
             >
                 기본 프로필이 저장되었습니다.
             </Modal>
+
             <Modal
                 open={imageErrorModalOpen}
                 title="업로드 실패"
