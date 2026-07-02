@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createClub } from "../../apis/club";
 
 const MAX_NAME = 20;
 const MAX_DESC = 100;
@@ -8,10 +10,22 @@ const MAX_IMAGE_MB = 5;
 
 export default function CreateClubPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [capacity, setCapacity] = useState(10);
   const [preview, setPreview] = useState("");
+
+  const createClubMutation = useMutation({
+    mutationFn: (payload) => createClub(payload),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["my-clubs"] });
+      navigate("/main", { replace: true });
+    },
+    onError: () => {
+      alert("동아리 생성에 실패했어요. 잠시 후 다시 시도해주세요.");
+    },
+  });
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -24,7 +38,14 @@ export default function CreateClubPage() {
   };
 
   const handleSubmit = () => {
-    // TODO: 동아리 생성 API 호출
+    const trimmedName = name.trim();
+    if (!trimmedName || createClubMutation.isPending) return;
+
+    createClubMutation.mutate({
+      clubName: trimmedName,
+      description: description.trim(),
+      capacity,
+    });
   };
 
   return (
@@ -87,7 +108,7 @@ export default function CreateClubPage() {
         </div>
 
         <label className="mt-6 block font-bold text-gray-900">대표 이미지</label>
-        <label className="mt-2 flex aspect-[16/9] max-w-xs cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50 text-gray-400 transition-colors hover:border-modam-coral/60">
+        <label className="mt-2 flex aspect-video max-w-xs cursor-pointer flex-col items-center justify-center overflow-hidden rounded-xl border border-dashed border-gray-300 bg-gray-50 text-gray-400 transition-colors hover:border-modam-coral/60">
           {preview ? (
             <img src={preview} alt="대표 이미지 미리보기" className="h-full w-full object-cover" />
           ) : (
@@ -107,10 +128,10 @@ export default function CreateClubPage() {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={!name.trim()}
+          disabled={!name.trim() || createClubMutation.isPending}
           className="mt-8 w-full rounded-xl bg-modam-coral py-3.5 text-[15px] font-bold text-white transition hover:brightness-95 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          동아리 생성하기
+          {createClubMutation.isPending ? "생성 중..." : "동아리 생성하기"}
         </button>
         <p className="mt-3 text-center text-xs text-gray-400">
           생성 버튼을 누르면 동아리 개설 및 운영 정책에 동의하는 것으로 간주됩니다.

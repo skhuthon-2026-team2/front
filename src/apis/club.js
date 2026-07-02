@@ -4,7 +4,10 @@ const userId = () => localStorage.getItem("userId");
 
 // 내가 속한 동아리 목록
 export const getMyClubs = () =>
-  api.get("/api/main/clubs/my-clubs", { params: { userId: userId() } });
+  api.get("/api/main/clubs/my-clubs", { params: { userId: userId() } }).then((data) => {
+    if (Array.isArray(data)) return data;
+    return data?.myClubs ?? data?.content ?? [];
+  });
 
 // 동아리 상세
 export const getClub = (clubId) => api.get(`/api/main/clubs/${clubId}`);
