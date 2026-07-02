@@ -1,16 +1,24 @@
 import { useState } from "react";
 import MyPageFrame from "./components/MyPageFrame";
 import Modal from "../../components/common/Modal";
+import { useUserStore } from "../../stores/userStore";
+
+import profile1 from "./components/img/profile1.png";
+import profile2 from "./components/img/profile2.png";
+import profile3 from "./components/img/profile3.png";
 
 const MAX_IMAGE_MB = 5;
 
-export default function BasicProfilePage() {
-    const USER = {
-        name: "김서연",
-        email: "kim@example.com",
-    };
+const DEFAULT_PROFILE_IMAGES = [
+    profile1,
+    profile2,
+    profile3,
+];
 
-    const [preview, setPreview] = useState("https://i.pravatar.cc/300?img=47");
+export default function BasicProfilePage() {
+    const { user, setProfileImage } = useUserStore();
+
+    const [preview, setPreview] = useState(user.profileImage);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
     const [imageErrorModalOpen, setImageErrorModalOpen] = useState(false);
 
@@ -24,11 +32,13 @@ export default function BasicProfilePage() {
             return;
         }
 
-        setPreview(URL.createObjectURL(file));
+        const imageUrl = URL.createObjectURL(file);
+
+        setPreview(imageUrl);
     };
 
     const handleSave = () => {
-        // TODO : 프로필 수정 API
+        setProfileImage(preview);
         setSaveModalOpen(true);
     };
 
@@ -63,13 +73,39 @@ export default function BasicProfilePage() {
                     </div>
 
                     <p className="mt-2 text-xs text-gray-400">JPG, PNG (최대 5MB)</p>
+
+                    <div className="mt-6">
+                        <p className="mb-3 text-sm font-semibold text-gray-700">
+                            기본 프로필 선택
+                        </p>
+
+                        <div className="flex gap-4">
+                            {DEFAULT_PROFILE_IMAGES.map((image) => (
+                                <button
+                                    key={image}
+                                    type="button"
+                                    onClick={() => setPreview(image)}
+                                    className={`rounded-full p-1 transition ${preview === image
+                                            ? "ring-2 ring-modam-coral ring-offset-2"
+                                            : "hover:opacity-80"
+                                        }`}
+                                >
+                                    <img
+                                        src={image}
+                                        alt="기본 프로필"
+                                        className="h-14 w-14 rounded-full object-cover"
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="mt-8">
                     <label className="block font-bold text-gray-900">이름</label>
 
                     <input
-                        value={USER.name}
+                        value={user.name}
                         disabled
                         className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
                     />
@@ -83,7 +119,7 @@ export default function BasicProfilePage() {
                     <label className="block font-bold text-gray-900">이메일</label>
 
                     <input
-                        value={USER.email}
+                        value={user.email}
                         disabled
                         className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
                     />
@@ -97,6 +133,7 @@ export default function BasicProfilePage() {
                     저장하기
                 </button>
             </div>
+
             <Modal
                 open={saveModalOpen}
                 title="저장 완료"
@@ -107,6 +144,7 @@ export default function BasicProfilePage() {
             >
                 기본 프로필이 저장되었습니다.
             </Modal>
+
             <Modal
                 open={imageErrorModalOpen}
                 title="업로드 실패"

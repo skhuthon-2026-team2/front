@@ -1,8 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
+import { useUserStore } from "../../stores/userStore";
 import logo from "../common/img/모담.png";
 
 export default function Header({ showSearch = false, tabs = null, clubId }) {
-  const user = { name: "김서연" };
+  const { user } = useUserStore();
 
   return (
     <header className="sticky top-0 z-10 border-b border-gray-200/70 bg-[#faf9f8]">
@@ -69,9 +70,11 @@ export default function Header({ showSearch = false, tabs = null, clubId }) {
             to="/mypage/profile"
             className="flex items-center gap-2 rounded-full px-2 py-1 transition hover:bg-white"
           >
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-modam-coral/15 text-sm font-bold text-modam-coral">
-              {user.name.charAt(0)}
-            </div>
+            <img
+              src={user.profileImage}
+              alt={user.name}
+              className="h-9 w-9 rounded-full object-cover"
+            />
             <p className="text-sm font-bold text-gray-900">{user.name}님</p>
           </Link>
         </div>

@@ -1,14 +1,12 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from "../../../components/common/Modal";
-
-const USER = {
-    name: "김서연",
-    profile: "https://i.pravatar.cc/150?img=47",
-};
+import { useUserStore } from "../../../stores/userStore";
 
 export default function MySidebar() {
     const navigate = useNavigate();
+
+    const { user } = useUserStore();
 
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
@@ -23,13 +21,13 @@ export default function MySidebar() {
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                 <div className="flex flex-col items-center">
                     <img
-                        src={USER.profile}
-                        alt={USER.name}
+                        src={user.profileImage}
+                        alt={user.name}
                         className="h-20 w-20 rounded-full object-cover"
                     />
 
                     <h2 className="mt-3 font-bold text-gray-900">
-                        {USER.name}
+                        {user.name}
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-400">
