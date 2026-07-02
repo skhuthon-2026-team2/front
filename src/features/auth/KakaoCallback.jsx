@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../apis/axios";
 import { useAuthStore } from "../../stores/authStore";
+import { useUserStore } from "../../stores/userStore";
 
 export default function KakaoCallback() {
   const [searchParams] = useSearchParams();
@@ -15,8 +16,8 @@ export default function KakaoCallback() {
 
     api
       .get("/api/auth/login/kakao", { params: { code } })
-      .then((response) => {
-        const auth = response.data?.data ?? {};
+      .then((auth) => {
+        const setUser = useUserStore.getState().setUser;
         const savedUserId = auth.userId ?? auth.id;
 
         if (auth.accessToken) {
@@ -33,7 +34,15 @@ export default function KakaoCallback() {
           throw new Error("missing accessToken");
         }
 
-        useAuthStore.setState({ isLoggedIn: true });
+        if (auth.nickname || auth.name || auth.imageUrl || auth.profileImage) {
+          setUser({
+            name: auth.nickname ?? auth.name ?? "",
+            profileImage: auth.imageUrl ?? auth.profileImage ?? "",
+          });
+        }
+
+        const setLoggedIn = useAuthStore.getState().setLoggedIn;
+        setLoggedIn();
         navigate("/main", { replace: true });
       })
       .catch(() => {

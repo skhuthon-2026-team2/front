@@ -22,7 +22,7 @@ export default function BasicProfilePage() {
     const setUser = useUserStore((state) => state.setUser);
     const setProfileImage = useUserStore((state) => state.setProfileImage);
 
-    const [preview, setPreview] = useState(user.profileImage);
+    const [preview, setPreview] = useState(user.profileImage || profile1);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
     const [imageErrorModalOpen, setImageErrorModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -34,10 +34,11 @@ export default function BasicProfilePage() {
             setError("");
 
             const data = await getMyProfile();
+            const profileData = data?.data ?? data ?? {};
 
             const profile = {
-                name: data.nickname,
-                profileImage: data.imageUrl || profile1,
+                name: profileData.nickname ?? profileData.name ?? "",
+                profileImage: profileData.imageUrl || profileData.profileImage || profile1,
             };
 
             setUser(profile);
@@ -109,7 +110,7 @@ export default function BasicProfilePage() {
 
                     <div className="mt-4 flex items-center gap-6">
                         <img
-                            src={preview}
+                            src={preview || profile1}
                             alt="프로필"
                             className="h-28 w-28 rounded-full object-cover"
                         />

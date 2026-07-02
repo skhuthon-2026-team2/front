@@ -5,7 +5,7 @@ const userId = () => localStorage.getItem("userId");
 // 내 정보 조회
 export const getMyProfile = () =>
     api.get("/api/mypage/me", {
-        params: { userId: userId() },
+        params: userId() ? { userId: userId() } : undefined,
     });
 
 // 나의 기본 프로필 수정
@@ -14,7 +14,7 @@ export const updateMyProfile = (imageUrl) =>
         "/api/mypage/profile",
         { imageUrl },
         {
-            params: { userId: userId() },
+            params: userId() ? { userId: userId() } : undefined,
         }
     );
 
@@ -33,7 +33,7 @@ export const updateClubProfile = (clubId, clubMemberId, nickname) =>
 export const getMyFeeds = (page = 0, size = 20) =>
     api.get("/api/mypage/feeds", {
         params: {
-            userId: userId(),
+            ...(userId() ? { userId: userId() } : {}),
             page,
             size,
         },

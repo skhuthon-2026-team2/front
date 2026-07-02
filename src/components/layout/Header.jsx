@@ -4,6 +4,8 @@ import logo from "../common/img/모담.png";
 
 export default function Header({ showSearch = false, tabs = null, clubId }) {
   const { user } = useUserStore();
+  const profileImage = user?.profileImage || "";
+  const displayName = user?.name || "";
 
   return (
     <header className="sticky top-0 z-10 border-b border-gray-200/70 bg-[#faf9f8]">
@@ -70,12 +72,18 @@ export default function Header({ showSearch = false, tabs = null, clubId }) {
             to="/mypage/profile"
             className="flex items-center gap-2 rounded-full px-2 py-1 transition hover:bg-white"
           >
-            <img
-              src={user.profileImage}
-              alt={user.name}
-              className="h-9 w-9 rounded-full object-cover"
-            />
-            <p className="text-sm font-bold text-gray-900">{user.name}님</p>
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt={displayName || "프로필"}
+                className="h-9 w-9 rounded-full object-cover"
+              />
+            ) : (
+              <span className="h-9 w-9 rounded-full bg-gray-200" aria-hidden />
+            )}
+            <p className="text-sm font-bold text-gray-900">
+              {displayName ? `${displayName}님` : "내 프로필"}
+            </p>
           </Link>
         </div>
       </div>

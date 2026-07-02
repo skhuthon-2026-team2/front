@@ -2,16 +2,26 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import Modal from "../../../components/common/Modal";
 import { useUserStore } from "../../../stores/userStore";
+import { useAuthStore } from "../../../stores/authStore";
 
 export default function MySidebar() {
     const navigate = useNavigate();
 
     const { user } = useUserStore();
+    const resetUser = useUserStore((state) => state.resetUser);
+    const setLoggedOut = useAuthStore((state) => state.setLoggedOut);
+    const profileImage = user?.profileImage || "";
+    const displayName = user?.name || "";
 
     const [logoutModalOpen, setLogoutModalOpen] = useState(false);
 
     const handleLogout = () => {
-        // TODO: 백엔드 연동 시 토큰 삭제
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userId");
+
+        resetUser();
+        setLoggedOut();
 
         navigate("/login");
     };
@@ -20,14 +30,18 @@ export default function MySidebar() {
         <aside className="w-[250px] shrink-0">
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
                 <div className="flex flex-col items-center">
-                    <img
-                        src={user.profileImage}
-                        alt={user.name}
-                        className="h-20 w-20 rounded-full object-cover"
-                    />
+                    {profileImage ? (
+                        <img
+                            src={profileImage}
+                            alt={displayName || "프로필"}
+                            className="h-20 w-20 rounded-full object-cover"
+                        />
+                    ) : (
+                        <span className="h-20 w-20 rounded-full bg-gray-200" aria-hidden />
+                    )}
 
                     <h2 className="mt-3 font-bold text-gray-900">
-                        {user.name}
+                        {displayName || "내 프로필"}
                     </h2>
 
                     <p className="mt-1 text-sm text-gray-400">

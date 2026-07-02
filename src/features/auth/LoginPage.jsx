@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuthStore } from "../../stores/authStore";
+import { useUserStore } from "../../stores/userStore";
 
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?${new URLSearchParams(
   {
@@ -59,7 +60,14 @@ export default function LoginPage() {
           localStorage.setItem("userId", String(tokenData.userId));
         }
 
-        useAuthStore.setState({ isLoggedIn: true });
+        if (tokenData.nickname || tokenData.name || tokenData.imageUrl || tokenData.profileImage) {
+          useUserStore.getState().setUser({
+            name: tokenData.nickname ?? tokenData.name ?? "",
+            profileImage: tokenData.imageUrl ?? tokenData.profileImage ?? "",
+          });
+        }
+
+        useAuthStore.getState().setLoggedIn();
 
         if (!cancelled) {
           navigate("/main", { replace: true });
