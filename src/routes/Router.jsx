@@ -16,6 +16,10 @@ import ClubProfilePage from "../features/mypage/ClubProfilePage";
 import MyFeedPage from "../features/mypage/MyFeedPage";
 import TimelinePage from "../features/mypage/TimelinePage";
 import KakaoCallback from "../features/auth/KakaoCallback";
+import ClubTimelinePage from "../features/timeline/ClubTimelinePage";
+import TimelineDetailPage from "../features/timeline/TimelineDetailPage";
+import CreateTimelinePage from "../features/timeline/CreateTimelinePage";
+import SlideshowEditPage from "../features/timeline/SlideshowEditPage";
 
 function PlaceholderPage({ title, description }) {
   return (
@@ -49,15 +53,10 @@ export default function Router() {
       <Route path="/club/:clubId" element={<ClubLayout />}>
         <Route path="feed" element={<FeedPage />} />
         <Route path="write" element={<WriteFeedPage />} />
-        <Route
-          path="timeline"
-          element={
-            <PlaceholderPage
-              title="타임라인"
-              description="동아리 타임라인 화면이 들어갈 자리입니다."
-            />
-          }
-        />
+        <Route path="timeline/:timelineId" element={<TimelineDetailPage />} />
+        <Route path="timeline" element={<ClubTimelinePage />} />
+        <Route path="timeline/create" element={<CreateTimelinePage />} />
+        <Route path="timeline/create/slideshow" element={<SlideshowEditPage />} />
         <Route
           path="ai"
           element={
