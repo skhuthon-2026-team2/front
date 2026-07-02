@@ -19,13 +19,20 @@ export const getMyClubs = () =>
 export const getClub = (clubId) => api.get(`/api/main/clubs/${clubId}`).then(unwrap);
 
 // 동아리 생성
-export const createClub = (body) => api.post("/api/main/clubs", body).then(unwrap);
+export const createClub = (body) =>
+  api
+    .post("/api/main/clubs", body, {
+      params: userId() ? { userId: userId() } : undefined,
+    })
+    .then(unwrap);
 
 // 동아리 가입 (초대코드 검증 + 가입)
 export const joinClub = (clubId, body) =>
-  api.post(`/api/main/clubs/${clubId}/members/join`, body, {
-    params: { userId: userId() },
-  }).then(unwrap);
+  api
+    .post(`/api/main/clubs/${clubId}/members/join`, body, {
+      params: { userId: userId() },
+    })
+    .then(unwrap);
 
 // 동아리 멤버 목록 (페이징 → content 반환)
 export const getClubMembers = (clubId) =>
