@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../apis/axios";
+import { useAuthStore } from "../../stores/authStore";
 
 export default function KakaoCallback() {
   const [searchParams] = useSearchParams();
@@ -14,10 +15,20 @@ export default function KakaoCallback() {
 
     api
       .get("/api/auth/login/kakao", { params: { code } })
-      .then((data) => {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("userId", data.userId);
+      .then((response) => {
+        const auth = response.data?.data ?? {};
+
+        if (auth.accessToken) {
+          localStorage.setItem("accessToken", auth.accessToken);
+        }
+        if (auth.refreshToken) {
+          localStorage.setItem("refreshToken", auth.refreshToken);
+        }
+        if (auth.userId !== undefined && auth.userId !== null) {
+          localStorage.setItem("userId", String(auth.userId));
+        }
+
+        useAuthStore.setState({ isLoggedIn: true });
         navigate("/main", { replace: true });
       })
       .catch(() => {
