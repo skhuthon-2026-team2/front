@@ -1,16 +1,21 @@
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getMyClubs } from "../../apis/club";
 import ActionCard from "./components/ActionCard";
 import ClubCard from "./components/ClubCard";
 import EmptyClubs from "./components/EmptyClubs";
 import { PlusIcon, SearchIcon } from "./components/icons";
 
-const myClubs = [];
-
 export default function MainPage() {
   const navigate = useNavigate();
 
+  const { data: myClubs = [], isLoading } = useQuery({
+    queryKey: ["my-clubs"],
+    queryFn: getMyClubs,
+  });
+
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-6xl px-6 py-10">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <ActionCard
           accent="coral"
@@ -34,12 +39,14 @@ export default function MainPage() {
           <span className="text-sm font-medium text-gray-400">{myClubs.length}</span>
         </div>
 
-        {myClubs.length === 0 ? (
+        {isLoading ? (
+          <p className="mt-5 text-sm text-gray-400">불러오는 중...</p>
+        ) : myClubs.length === 0 ? (
           <EmptyClubs />
         ) : (
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {myClubs.map((club) => (
-              <ClubCard key={club.id} club={club} />
+              <ClubCard key={club.clubId} club={club} />
             ))}
           </div>
         )}
