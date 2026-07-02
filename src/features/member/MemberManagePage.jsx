@@ -1,20 +1,59 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 
 import MemberSidebar from "./components/MemberSidebar";
 import MemberSearch from "./components/MemberSearch";
 import CapacityCard from "./components/CapacityCard";
 import MemberTable from "./components/MemberTable";
-
 import Modal from "../../components/common/Modal";
 
-import { MOCK_MEMBERS } from "./mockMembers";
+import { getClubMembers, deleteClubMember } from "../../apis/memberApi";
 
 export default function MemberManagePage() {
+    const { clubId } = useParams();
+
     const [keyword, setKeyword] = useState("");
-    const [members, setMembers] = useState(MOCK_MEMBERS);
+    const [members, setMembers] = useState([]);
     const [capacity, setCapacity] = useState(30);
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
     const [kickTarget, setKickTarget] = useState(null);
+
+    const loadMembers = async () => {
+        try {
+            setLoading(true);
+            setError("");
+
+            const res = await getClubMembers(clubId);
+
+            const content = res.data.data.content;
+
+            const mappedMembers = content.map((member) => ({
+                id: member.clubMemberId,
+                name: member.nickname,
+                avatar: member.profileImage || "https://i.pravatar.cc/150?img=47",
+                role: member.role === "OWNER" ? "회장" : "일반회원",
+                joinedAt: member.createdAt
+                    ? member.createdAt.slice(0, 10)
+                    : "-",
+            }));
+
+            setMembers(mappedMembers);
+        } catch (err) {
+            console.error(err);
+            setError("멤버 목록을 불러오지 못했습니다.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (clubId) {
+            loadMembers();
+        }
+    }, [clubId]);
 
     const filteredMembers = useMemo(() => {
         return members.filter((member) =>
@@ -26,12 +65,17 @@ export default function MemberManagePage() {
         setKickTarget(id);
     };
 
-    const confirmKick = () => {
-        setMembers((prev) =>
-            prev.filter((member) => member.id !== kickTarget)
-        );
+    const confirmKick = async () => {
+        try {
+            await deleteClubMember(clubId, kickTarget);
 
-        setKickTarget(null);
+            setKickTarget(null);
+            await loadMembers();
+        } catch (err) {
+            console.error(err);
+            setKickTarget(null);
+            alert("멤버 내보내기에 실패했습니다.");
+        }
     };
 
     return (
@@ -42,9 +86,7 @@ export default function MemberManagePage() {
                 <main className="flex-1">
                     <div className="flex items-start justify-between">
                         <div>
-                            <h1 className="text-2xl font-bold">
-                                멤버 관리
-                            </h1>
+                            <h1 className="text-2xl font-bold">멤버 관리</h1>
 
                             <p className="mt-2 text-sm text-gray-500">
                                 현재 동아리 멤버를 관리할 수 있습니다.
@@ -59,17 +101,21 @@ export default function MemberManagePage() {
                     </div>
 
                     <div className="mt-7">
-                        <MemberSearch
-                            keyword={keyword}
-                            setKeyword={setKeyword}
-                        />
+                        <MemberSearch keyword={keyword} setKeyword={setKeyword} />
                     </div>
 
                     <div className="mt-6">
-                        <MemberTable
-                            members={filteredMembers}
-                            onKick={handleKick}
-                        />
+                        {loading ? (
+                            <div className="rounded-2xl border border-gray-100 bg-white py-20 text-center text-gray-400 shadow-sm">
+                                멤버 목록을 불러오는 중입니다.
+                            </div>
+                        ) : error ? (
+                            <div className="rounded-2xl border border-gray-100 bg-white py-20 text-center text-red-400 shadow-sm">
+                                {error}
+                            </div>
+                        ) : (
+                            <MemberTable members={filteredMembers} onKick={handleKick} />
+                        )}
                     </div>
                 </main>
             </div>
