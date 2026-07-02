@@ -55,6 +55,10 @@ export default function LoginPage() {
           localStorage.setItem("refreshToken", tokenData.refreshToken);
         }
 
+        if (tokenData.userId !== undefined && tokenData.userId !== null) {
+          localStorage.setItem("userId", String(tokenData.userId));
+        }
+
         useAuthStore.setState({ isLoggedIn: true });
 
         if (!cancelled) {
