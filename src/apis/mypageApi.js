@@ -2,11 +2,13 @@ import api from "./axios";
 
 const userId = () => localStorage.getItem("userId");
 
+// 내 정보 조회
 export const getMyProfile = () =>
     api.get("/api/mypage/me", {
         params: { userId: userId() },
     });
 
+// 나의 기본 프로필 수정
 export const updateMyProfile = (imageUrl) =>
     api.patch(
         "/api/mypage/profile",
@@ -15,3 +17,24 @@ export const updateMyProfile = (imageUrl) =>
             params: { userId: userId() },
         }
     );
+
+// 동아리별 프로필 수정
+export const updateClubProfile = (clubId, clubMemberId, nickname) =>
+    api.patch(
+        `/api/mypage/clubs/${clubId}/profile`,
+        { nickname },
+        {
+            params: {
+                clubMemberId,
+            },
+        }
+    );
+// 내가 만든 피드 목록 조회
+export const getMyFeeds = (page = 0, size = 20) =>
+    api.get("/api/mypage/feeds", {
+        params: {
+            userId: userId(),
+            page,
+            size,
+        },
+    });

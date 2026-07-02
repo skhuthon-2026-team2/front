@@ -43,7 +43,10 @@ export default function BasicProfilePage() {
             setUser(profile);
             setPreview(profile.profileImage);
         } catch (err) {
-            console.error(err);
+            console.error("프로필 조회 실패:", err);
+            console.error("status:", err.response?.status);
+            console.error("data:", err.response?.data);
+
             setError("프로필 정보를 불러오지 못했습니다.");
         } finally {
             setLoading(false);
