@@ -13,7 +13,7 @@ export default function CreateClubPage() {
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [capacity, setCapacity] = useState(10);
+  const [maxMembers, setMaxMembers] = useState(10);
   const [preview, setPreview] = useState("");
 
   const createClubMutation = useMutation({
@@ -29,7 +29,8 @@ export default function CreateClubPage() {
       await queryClient.invalidateQueries({ queryKey: ["my-clubs"] });
       navigate("/main", { replace: true });
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("생성 실패:", error?.response?.status, error?.response?.data);
       alert("동아리 생성에 실패했어요. 잠시 후 다시 시도해주세요.");
     },
   });
@@ -51,7 +52,8 @@ export default function CreateClubPage() {
     createClubMutation.mutate({
       clubName: trimmedName,
       description: description.trim(),
-      capacity,
+      clubImageUrl: "",
+      maxMembers,
     });
   };
 
@@ -99,8 +101,8 @@ export default function CreateClubPage() {
         <label className="mt-6 block font-bold text-gray-900">최대 인원</label>
         <div className="relative mt-2">
           <select
-            value={capacity}
-            onChange={(e) => setCapacity(Number(e.target.value))}
+            value={maxMembers}
+            onChange={(e) => setMaxMembers(Number(e.target.value))}
             className="w-full appearance-none rounded-xl bg-gray-100 px-4 py-3 text-sm outline-none transition-colors focus:bg-gray-50 focus:ring-2 focus:ring-modam-coral/40"
           >
             {CAPACITY_OPTIONS.map((n) => (
