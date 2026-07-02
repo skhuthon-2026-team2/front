@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MyPageFrame from "./components/MyPageFrame";
 import Modal from "../../components/common/Modal";
 import { useUserStore } from "../../stores/userStore";
+
+import { getMyProfile, updateMyProfile } from "../../apis/mypageApi";
 
 import profile1 from "./components/img/profile1.png";
 import profile2 from "./components/img/profile2.png";
@@ -16,11 +18,44 @@ const DEFAULT_PROFILE_IMAGES = [
 ];
 
 export default function BasicProfilePage() {
-    const { user, setProfileImage } = useUserStore();
+    const user = useUserStore((state) => state.user);
+    const setUser = useUserStore((state) => state.setUser);
+    const setProfileImage = useUserStore((state) => state.setProfileImage);
 
     const [preview, setPreview] = useState(user.profileImage);
     const [saveModalOpen, setSaveModalOpen] = useState(false);
     const [imageErrorModalOpen, setImageErrorModalOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
+    const loadProfile = async () => {
+        try {
+            setLoading(true);
+            setError("");
+
+            const data = await getMyProfile();
+
+            const profile = {
+                name: data.nickname,
+                profileImage: data.imageUrl || profile1,
+            };
+
+            setUser(profile);
+            setPreview(profile.profileImage);
+        } catch (err) {
+            console.error("프로필 조회 실패:", err);
+            console.error("status:", err.response?.status);
+            console.error("data:", err.response?.data);
+
+            setError("프로필 정보를 불러오지 못했습니다.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadProfile();
+    }, []);
 
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
@@ -37,9 +72,16 @@ export default function BasicProfilePage() {
         setPreview(imageUrl);
     };
 
-    const handleSave = () => {
-        setProfileImage(preview);
-        setSaveModalOpen(true);
+    const handleSave = async () => {
+        try {
+            await updateMyProfile(preview);
+
+            setProfileImage(preview);
+            setSaveModalOpen(true);
+        } catch (err) {
+            console.error(err);
+            setError("프로필 저장에 실패했습니다.");
+        }
     };
 
     return (
@@ -50,6 +92,17 @@ export default function BasicProfilePage() {
                 <p className="mt-2 text-sm text-gray-500">
                     기본 프로필 정보를 변경할 수 있습니다.
                 </p>
+                {loading && (
+                    <p className="mt-4 text-sm text-gray-400">
+                        프로필 정보를 불러오는 중입니다.
+                    </p>
+                )}
+
+                {error && (
+                    <p className="mt-4 text-sm text-red-500">
+                        {error}
+                    </p>
+                )}
 
                 <div className="mt-8">
                     <label className="block font-bold text-gray-900">프로필 사진</label>
@@ -86,8 +139,8 @@ export default function BasicProfilePage() {
                                     type="button"
                                     onClick={() => setPreview(image)}
                                     className={`rounded-full p-1 transition ${preview === image
-                                            ? "ring-2 ring-modam-coral ring-offset-2"
-                                            : "hover:opacity-80"
+                                        ? "ring-2 ring-modam-coral ring-offset-2"
+                                        : "hover:opacity-80"
                                         }`}
                                 >
                                     <img
@@ -113,16 +166,6 @@ export default function BasicProfilePage() {
                     <p className="mt-2 text-xs text-gray-400">
                         카카오 로그인 이름은 변경할 수 없습니다.
                     </p>
-                </div>
-
-                <div className="mt-6">
-                    <label className="block font-bold text-gray-900">이메일</label>
-
-                    <input
-                        value={user.email}
-                        disabled
-                        className="mt-2 w-full rounded-xl bg-gray-100 px-4 py-3 text-sm text-gray-500 outline-none"
-                    />
                 </div>
 
                 <button
