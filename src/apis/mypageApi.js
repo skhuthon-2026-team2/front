@@ -38,3 +38,11 @@ export const getMyFeeds = (page = 0, size = 20) =>
             size,
         },
     });
+export const getMyTimelines = (page = 0, size = 20) =>
+    api.get("/api/mypage/timelines", {
+        params: {
+            userId: userId(),
+            page,
+            size,
+        },
+    });
