@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import MyPageFrame from "./components/MyPageFrame";
 import Modal from "../../components/common/Modal";
 import { useUserStore } from "../../stores/userStore";
+import { uploadFile } from "../../apis/file";
 
 import { getMyProfile, updateMyProfile } from "../../apis/mypageApi";
 
@@ -17,6 +18,17 @@ const DEFAULT_PROFILE_IMAGES = [
     profile3,
 ];
 
+const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+
+        reader.readAsDataURL(file);
+    });
+};
+
 export default function BasicProfilePage() {
     const user = useUserStore((state) => state.user);
     const setUser = useUserStore((state) => state.setUser);
@@ -27,6 +39,7 @@ export default function BasicProfilePage() {
     const [imageErrorModalOpen, setImageErrorModalOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [selectedImage, setSelectedImage] = useState(null);
 
     const loadProfile = async () => {
         try {
@@ -34,7 +47,7 @@ export default function BasicProfilePage() {
             setError("");
 
             const data = await getMyProfile();
-            const profileData = data?.data ?? data ?? {};
+            const profileData = data ?? {};
 
             const profile = {
                 name: profileData.nickname ?? profileData.name ?? "",
@@ -58,7 +71,7 @@ export default function BasicProfilePage() {
         loadProfile();
     }, []);
 
-    const handleImageChange = (e) => {
+    const handleImageChange = async (e) => {
         const file = e.target.files?.[0];
 
         if (!file) return;
@@ -68,16 +81,27 @@ export default function BasicProfilePage() {
             return;
         }
 
-        const imageUrl = URL.createObjectURL(file);
+        const previewUrl = URL.createObjectURL(file);
+        setPreview(previewUrl);
 
-        setPreview(imageUrl);
+        const base64 = await convertToBase64(file);
+        setSelectedImage(base64);
     };
 
     const handleSave = async () => {
         try {
-            await updateMyProfile(preview);
+            let imageUrl = preview;
 
-            setProfileImage(preview);
+            if (selectedImage) {
+                const uploaded = await uploadFile(selectedImage);
+                imageUrl = uploaded.fileUrl;
+            }
+
+            await updateMyProfile(imageUrl);
+
+            setProfileImage(imageUrl);
+            setPreview(imageUrl);
+            setSelectedImage(null);
             setSaveModalOpen(true);
         } catch (err) {
             console.error(err);
@@ -116,7 +140,7 @@ export default function BasicProfilePage() {
                         />
 
                         <label className="cursor-pointer rounded-xl border border-gray-200 px-5 py-3 text-sm font-medium transition hover:bg-gray-50">
-                            사진 변경
+                            사진 선택
                             <input
                                 type="file"
                                 accept="image/png,image/jpeg"
@@ -138,7 +162,10 @@ export default function BasicProfilePage() {
                                 <button
                                     key={image}
                                     type="button"
-                                    onClick={() => setPreview(image)}
+                                    onClick={() => {
+                                        setPreview(image);
+                                        setSelectedImage(null);
+                                    }}
                                     className={`rounded-full p-1 transition ${preview === image
                                         ? "ring-2 ring-modam-coral ring-offset-2"
                                         : "hover:opacity-80"
