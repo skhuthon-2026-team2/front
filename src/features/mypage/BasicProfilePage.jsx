@@ -85,7 +85,11 @@ export default function BasicProfilePage() {
         setPreview(previewUrl);
 
         const base64 = await convertToBase64(file);
-        setSelectedImage(base64);
+
+        // data:image/png;base64, 부분 제거
+        const pureBase64 = base64.split(",")[1];
+
+        setSelectedImage(pureBase64);
     };
 
     const handleSave = async () => {
